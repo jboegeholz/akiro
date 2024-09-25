@@ -5,14 +5,14 @@ def generate_launch_description():
     return LaunchDescription([
         # Start drive_bot node
         Node(
-            package='my_robot_package',
+            package='akiro',
             executable='drive_bot',
             name='drive_bot',
             output='screen'
         ),
         # Start process_image node
         Node(
-            package='image_processing_package',
+            package='akiro',
             executable='process_image',
             name='process_image',
             output='screen'
