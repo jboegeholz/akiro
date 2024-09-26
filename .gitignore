@@ -1,2 +1,5 @@
 .idea
 venv310
+build
+install
+log

@@ -3,20 +3,7 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     return LaunchDescription([
-        # Start drive_bot node
-        Node(
-            package='akiro',
-            executable='drive_bot',
-            name='drive_bot',
-            output='screen'
-        ),
-        # Start process_image node
-        Node(
-            package='akiro',
-            executable='process_image',
-            name='process_image',
-            output='screen'
-        ),
+        
         # Start v4l2_camera node
         Node(
             package='v4l2_camera',
