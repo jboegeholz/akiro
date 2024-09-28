@@ -1,11 +1,13 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
+
 def generate_launch_description():
-    return LaunchDescription([
-        
-        # Start v4l2_camera node
-        Node(
+    detect_node = Node(
+            package='ball_tracker',
+            executable='process_image'
+         )
+    camera_node = Node(
             package='v4l2_camera',
             executable='v4l2_camera_node',
             name='v4l2_camera_node',
@@ -16,4 +18,8 @@ def generate_launch_description():
                 'image_size': [640, 480]
             }]
         )
+    return LaunchDescription([
+        detect_node,
+        camera_node
+
     ])
