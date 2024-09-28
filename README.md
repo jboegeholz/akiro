@@ -6,6 +6,9 @@
     ros2 run ball_tracker process_image
     ros2 run v4l2_camera v4l2_camera_node
 
+### via Launchfile
+    cd src/launch
+    ros2 launch start_robot.launch.py 
 
 ## check running nodes
 

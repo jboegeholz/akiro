@@ -3,3 +3,4 @@ venv310
 build
 install
 log
+src/ball_tracker/launch/__pycache__
