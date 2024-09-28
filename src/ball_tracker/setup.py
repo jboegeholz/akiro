@@ -20,6 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'process_image = ball_tracker.process_image'
         ],
     },
 )
