@@ -1,5 +1,12 @@
 # AKIRO - ROS 2 Robot Project
 
+
+## Nodes starten
+
+    ros2 run ball_tracker process_image
+    ros2 run v4l2_camera v4l2_camera_node
+
+
 ## check running nodes
 
     ros2 node list
