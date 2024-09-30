@@ -14,13 +14,11 @@ class ImageSubscriber(Node):
             '/image_raw',
             self.listener_callback,
             10)
-        self.subscription
         self.bridge = CvBridge()
 
     def listener_callback(self, msg):
-
         cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
-        self.get_logger().info('Empfange Bilddaten...')
+        self.get_logger().info('Receive image data...')
 
         cv2.imshow("Image Window", cv_image)
         cv2.waitKey(1)
