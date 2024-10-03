@@ -28,8 +28,8 @@ class ImageSubscriber(Node):
 
         working_image = cv2.blur(cv_image, (5, 5))
         working_image = cv2.cvtColor(working_image, cv2.COLOR_BGR2HSV)
-        thresh_min = (21, 153, 42)
-        thresh_max = (255, 255, 255)
+        thresh_min = (21, 101, 49)
+        thresh_max = (145, 255, 255)
         working_image = cv2.inRange(working_image, thresh_min, thresh_max)
         working_image = cv2.dilate(working_image, None, iterations=2)
         working_image = cv2.erode(working_image, None, iterations=2)
