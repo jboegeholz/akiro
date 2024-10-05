@@ -3,6 +3,9 @@ from rclpy.node import Node
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 import cv2
+import numpy as np
+
+from src.ball_tracker.ball_tracker.blob_detector import detect_blob, BlobDetector
 
 
 class ImageSubscriber(Node):
@@ -16,27 +19,22 @@ class ImageSubscriber(Node):
             10)
         self.get_logger().info('<< Subscribed to /image_raw')
         self.bridge = CvBridge()
+        self.blob_detector = BlobDetector()
 
     def listener_callback(self, msg):
-        cv_image = None
         try:
-            cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
+            image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
             self.get_logger().info('Receive image data...')
         except CvBridgeError as e:
             self.get_logger().error("CvBridgeError!")
             return
 
-        working_image = cv2.blur(cv_image, (5, 5))
-        working_image = cv2.cvtColor(working_image, cv2.COLOR_BGR2HSV)
-        thresh_min = (21, 153, 42)
-        thresh_max = (255, 255, 255)
-        working_image = cv2.inRange(working_image, thresh_min, thresh_max)
-        working_image = cv2.dilate(working_image, None, iterations=2)
-        working_image = cv2.erode(working_image, None, iterations=2)
-        working_image = 255 - working_image
+        keypoints, working_image = self.blob_detector.detect_blob(image)
 
-        cv2.imshow("Image Window", working_image)
-        cv2.waitKey(1)
+        image_with_keypoints = cv2.drawKeypoints(image, keypoints, np.array([]), (0, 0, 255),
+                                                 cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+        cv2.imshow("Keypoints", image_with_keypoints)
+        cv2.waitKey(0)
 
 
 def main(args=None):
