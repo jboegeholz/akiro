@@ -14,6 +14,7 @@ def generate_launch_description():
             output='screen',
             parameters=[{
                 'video_device': '/dev/video0',
+                'time_per_frame': [1, 6],
                 'pixel_format': 'YUYV',
                 'image_size': [640, 480]
             }]
