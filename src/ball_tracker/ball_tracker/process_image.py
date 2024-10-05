@@ -5,7 +5,7 @@ from cv_bridge import CvBridge, CvBridgeError
 import cv2
 import numpy as np
 
-from blob_detector import BlobDetector
+from ball_tracker.blob_detector import BlobDetector
 
 
 class ImageSubscriber(Node):
@@ -31,10 +31,10 @@ class ImageSubscriber(Node):
 
         keypoints, working_image = self.blob_detector.detect_blob(image)
 
-        image_with_keypoints = cv2.drawKeypoints(image, keypoints, np.array([]), (0, 0, 255),
+        image_with_keypoints = cv2.drawKeypoints(working_image, keypoints, np.array([]), (0, 0, 255),
                                                  cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
         cv2.imshow("Keypoints", image_with_keypoints)
-        cv2.waitKey(0)
+        cv2.waitKey(1)
 
 
 def main(args=None):
