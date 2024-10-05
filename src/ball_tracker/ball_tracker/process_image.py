@@ -5,7 +5,7 @@ from cv_bridge import CvBridge, CvBridgeError
 import cv2
 import numpy as np
 
-from src.ball_tracker.ball_tracker.blob_detector import detect_blob, BlobDetector
+from blob_detector import BlobDetector
 
 
 class ImageSubscriber(Node):
