@@ -1,0 +1,16 @@
+twist_mux:
+  ros__parameters:
+    topics:
+      - name: cmd_vel_priority
+        topic: /cmd_vel_prio
+        timeout: 0.5
+        priority: 100
+
+      - name: cmd_vel_normal
+        topic: /cmd_vel
+        timeout: 0.5
+        priority: 50
+
+
+    output_topic: /cmd_vel_out
+    publish_limited_velocity: true

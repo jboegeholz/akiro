@@ -1,18 +1,17 @@
 # AKIRO - ROS 2 Robot Project
 
 
-## Nodes starten
+## Nodes startenv ia Launchfile
 
-    ros2 run ball_tracker process_image
-    ros2 run v4l2_camera v4l2_camera_node
-
-### via Launchfile
-    cd src/launch
-    ros2 launch start_robot.launch.py 
+    ros2 launch src/launch/start_robot.launch.py 
 
 ## check running nodes
 
     ros2 node list
+
+## check published topics
+    
+        ros2 topic list
 
 ## Lock dependencies
 
