@@ -11,6 +11,7 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('lib/' + package_name, [package_name + '/blob_detector.py']), # to avoid importing module via package name
+        ('lib/' + package_name, [package_name + '/drive_bot.py']), # to avoid importing module via package name
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -21,7 +22,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'process_image = ball_tracker.process_image:main'
+            'process_image = ball_tracker.process_image:main',
+            'drive_bot = ball_tracker.drive_bot:main'
         ],
     },
 )
