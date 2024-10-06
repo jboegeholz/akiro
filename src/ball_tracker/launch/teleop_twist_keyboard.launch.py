@@ -16,6 +16,7 @@ def generate_launch_description():
             executable='twist_mux',
             name='twist_mux',
             output='screen',
-            parameters=['/akiro/src/ball_tracker/config/twist_mux.yaml']
+            parameters=['/home/jboegeholz/akiro/src/ball_tracker/config/twist_mux.yaml']
+
         )
     ])
