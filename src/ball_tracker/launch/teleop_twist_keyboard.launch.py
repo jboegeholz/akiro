@@ -8,7 +8,7 @@ def generate_launch_description():
     package_path = get_package_share_directory('ball_tracker')
 
     # Erstelle den vollständigen Pfad zur Konfigurationsdatei
-    config_file_path = os.path.join(package_path, 'config', 'config.yaml')
+    config_file_path = os.path.join(package_path, 'config', 'twist_mux.yaml')
     
     return LaunchDescription([
         Node(
