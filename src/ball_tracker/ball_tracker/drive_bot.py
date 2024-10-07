@@ -1,11 +1,17 @@
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
+import serial
 
 class DriveBot(Node):
     def __init__(self):
         super().__init__('cmd_vel_subscriber')
 
+        self.serial_port = serial.Serial(
+            port='/dev/ttyUSB0',   # Passe den Port an
+            baudrate=9600,
+            timeout=1
+        )
         self.subscription = self.create_subscription(
             Twist,
             '/cmd_vel',
@@ -28,14 +34,22 @@ class DriveBot(Node):
         self.get_logger().info(
             f'Received cmd_vel - linear: ({linear_x}, {linear_y}, {linear_z}), angular: ({angular_x}, {angular_y}, {angular_z})')
 
-        # TODO send comand via rosserial to arduino
+        # TODO send comand to arduino
+        serial_message = f"linear: {linear_x}, angular: {angular_z}\n"
 
+        # Sende die Nachricht über die serielle Schnittstelle
+        self.serial_port.write(serial_message.encode('utf-8'))
+        self.get_logger().info(f'Sent over serial: {serial_message}')
+        
+    def destroy(self):
+        # Schließe die serielle Schnittstelle, wenn der Node zerstört wird
+        self.serial_port.close()
 
 def main(args=None):
     rclpy.init(args=args)
 
     drive_bot = DriveBot()
     rclpy.spin(drive_bot)
-
+    drive_bot.destroy()
     drive_bot.destroy_node()
     rclpy.shutdown()
