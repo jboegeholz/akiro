@@ -19,4 +19,4 @@
 
 ## Range detector
 
-    python range_detector.py --image yellow-tennis-ball.jpg --filter HSV --preview
+    python range_detector.py --image tennis-ball.jpg --filter HSV --preview

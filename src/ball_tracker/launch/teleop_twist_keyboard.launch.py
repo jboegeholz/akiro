@@ -4,10 +4,8 @@ from ament_index_python.packages import get_package_share_directory
 import os
 
 def generate_launch_description():
-    # Hole den Paketpfad
     package_path = get_package_share_directory('ball_tracker')
 
-    # Erstelle den vollständigen Pfad zur Konfigurationsdatei
     config_file_path = os.path.join(package_path, 'config', 'twist_mux.yaml')
     
     return LaunchDescription([
@@ -25,6 +23,5 @@ def generate_launch_description():
             name='twist_mux',
             output='screen',
             parameters=[config_file_path]
-
         )
     ])
