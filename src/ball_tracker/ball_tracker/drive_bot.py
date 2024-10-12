@@ -36,13 +36,10 @@ class DriveBot(Node):
 
         # TODO send comand to arduino
         serial_message = f"linear: {linear_x}, angular: {angular_z}\n"
-
-        # Sende die Nachricht über die serielle Schnittstelle
         self.serial_port.write(serial_message.encode('utf-8'))
         self.get_logger().info(f'Sent over serial: {serial_message}')
         
     def destroy(self):
-        # Schließe die serielle Schnittstelle, wenn der Node zerstört wird
         self.serial_port.close()
 
 def main(args=None):

@@ -22,4 +22,6 @@ class BlobDetector:
         image = cv2.inRange(image, self.hsv_thresh_min, self.hsv_thresh_max)
         image = 255 - image  # invert color white -> black
         keypoints = self.detector.detect(image)
+        # TODO normalize keypoints to 0-1
+
         return keypoints, image

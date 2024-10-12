@@ -7,6 +7,10 @@ def generate_launch_description():
             package='ball_tracker',
             executable='process_image'
          )
+    follow_node = Node(
+            package='ball_tracker',
+            executable='follow_ball'
+         )
     camera_node = Node(
             package='v4l2_camera',
             executable='v4l2_camera_node',
@@ -19,8 +23,13 @@ def generate_launch_description():
                 'image_size': [640, 480]
             }]
         )
+    drive_bot_node = Node(
+            package='ball_tracker',
+            executable='drive_bot'
+         )
     return LaunchDescription([
         detect_node,
-        camera_node
-
+        follow_node,
+        camera_node,
+        drive_bot_node
     ])
