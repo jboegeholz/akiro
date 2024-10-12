@@ -12,8 +12,8 @@ class BlobDetector:
         self.params.minConvexity = 0.9
         self.params.filterByInertia = True
         self.params.minInertiaRatio = 0.5
-        self.hsv_thresh_min = (21, 66, 61)
-        self.hsv_thresh_max = (46, 233, 248)
+        self.hsv_thresh_min = (35, 31, 18)
+        self.hsv_thresh_max = (74, 255, 255)
         self.detector = cv2.SimpleBlobDetector_create(self.params)
 
     def detect_blob(self, image):

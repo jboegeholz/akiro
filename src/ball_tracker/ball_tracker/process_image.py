@@ -30,6 +30,8 @@ class ImageSubscriber(Node):
             return
 
         keypoints, working_image = self.blob_detector.detect_blob(image)
+        if keypoints:
+            self.get_logger().info(f"Got keypoint: x: {keypoints[0].pt[0]} y: {keypoints[0].pt[1]}")
 
         image_with_keypoints = cv2.drawKeypoints(working_image, keypoints, np.array([]), (0, 0, 255),
                                                  cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
