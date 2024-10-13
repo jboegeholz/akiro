@@ -1,0 +1,9 @@
+# teleop_twist_joy/config/config.yaml
+axis_linear: 1  # z. B. linke Achse vor/zurück
+scale_linear: 0.5
+axis_angular: 0  # z. B. rechte Achse links/rechts
+scale_angular: 1.0
+enable_button: 4  # Taste, um Bewegung zu aktivieren
+enable_turbo_button: 5  # Taste, um den Boost-Modus zu aktivieren
+scale_linear_turbo: 1.0
+scale_angular_turbo: 2.0
