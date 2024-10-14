@@ -28,8 +28,8 @@ def generate_launch_description():
             executable='drive_bot'
          )
     return LaunchDescription([
-        detect_node,
-        follow_node,
-        camera_node,
+        #detect_node,
+        #follow_node,
+        #camera_node,
         drive_bot_node
     ])

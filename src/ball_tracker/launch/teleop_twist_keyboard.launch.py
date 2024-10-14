@@ -11,6 +11,7 @@ def generate_launch_description():
     teleop_twist_key = Node(
             package='teleop_twist_keyboard',
             executable='teleop_twist_keyboard',
+            name='teleop_twist_keyboard_node',
             output='screen',
             remappings=[
                 ('/cmd_vel', '/cmd_vel_sec')
@@ -34,6 +35,6 @@ def generate_launch_description():
         )
     return LaunchDescription([
         teleop_twist_key,
-        teleop_twist_joy,
-        twist_mux
+        #teleop_twist_joy,
+        #twist_mux
     ])

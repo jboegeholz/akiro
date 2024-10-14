@@ -7,11 +7,7 @@ class DriveBot(Node):
     def __init__(self):
         super().__init__('cmd_vel_subscriber')
 
-        self.serial_port = serial.Serial(
-            port='/dev/ttyUSB0',   # Passe den Port an
-            baudrate=9600,
-            timeout=1
-        )
+     
         self.subscription = self.create_subscription(
             Twist,
             '/cmd_vel',
@@ -36,7 +32,7 @@ class DriveBot(Node):
 
         # TODO send comand to arduino
         serial_message = f"linear: {linear_x}, angular: {angular_z}\n"
-        self.serial_port.write(serial_message.encode('utf-8'))
+        #self.serial_port.write(serial_message.encode('utf-8'))
         self.get_logger().info(f'Sent over serial: {serial_message}')
         
     def destroy(self):
