@@ -13,6 +13,7 @@ def generate_launch_description():
             executable='teleop_twist_keyboard',
             name='teleop_twist_keyboard_node',
             output='screen',
+            prefix="xterm -hold -e",
             remappings=[
                 ('/cmd_vel', '/cmd_vel_sec')
             ]
