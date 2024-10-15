@@ -19,5 +19,8 @@ class FollowBall(Node):
     def listener_callback(self, msg):
         x = msg.x
         y = msg.y
+        size = msg.z
+        self.get_logger().info(f"Received keypoint: x: {x} y: {y} size: {size}")
+        # convert keypoint to drive command
 
-        self.get_logger().info(f"Received keypoint: x: {x} y: {y}")
+        self.publisher.publish(Twist(linear=Vector3(x=linear_x), angular=Vector3(z=angular_z)))

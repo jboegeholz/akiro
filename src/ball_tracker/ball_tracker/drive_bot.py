@@ -7,7 +7,17 @@ class DriveBot(Node):
     def __init__(self):
         super().__init__('cmd_vel_subscriber')
 
-     
+        try:
+            self.serial_port = serial.Serial(
+                port='/dev/ttyUSB0',
+                baudrate=9600,
+                timeout=1
+            )
+        except serial.SerialException as e:
+            self.get_logger().error(e)
+            self.get_logger().error('Could not open serial port. Using loopback instead.')
+            self.serial_port = serial.serial_for_url('loop://', timeout=1)
+
         self.subscription = self.create_subscription(
             Twist,
             '/cmd_vel',
@@ -30,9 +40,8 @@ class DriveBot(Node):
         self.get_logger().info(
             f'Received cmd_vel - linear: ({linear_x}, {linear_y}, {linear_z}), angular: ({angular_x}, {angular_y}, {angular_z})')
 
-        # TODO send comand to arduino
         serial_message = f"linear: {linear_x}, angular: {angular_z}\n"
-        #self.serial_port.write(serial_message.encode('utf-8'))
+        self.serial_port.write(serial_message.encode('utf-8'))
         self.get_logger().info(f'Sent over serial: {serial_message}')
         
     def destroy(self):
