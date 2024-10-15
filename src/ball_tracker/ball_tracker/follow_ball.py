@@ -2,6 +2,8 @@
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Point
+from geometry_msgs.msg import Twist
+
 
 class FollowBall(Node):
     def __init__(self):
@@ -24,3 +26,11 @@ class FollowBall(Node):
         # convert keypoint to drive command
 
         self.publisher.publish(Twist(linear=Vector3(x=linear_x), angular=Vector3(z=angular_z)))
+
+def main(args=None):
+    rclpy.init(args=args)
+
+    follow_ball = FollowBall()
+    rclpy.spin(follow_ball)
+    follow_ball.destroy_node()
+    rclpy.shutdown()

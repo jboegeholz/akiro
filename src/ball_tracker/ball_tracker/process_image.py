@@ -10,7 +10,7 @@ from blob_detector import BlobDetector
 
 class ImageSubscriber(Node):
     def __init__(self):
-        super().__init__('image_subscriber')
+        super().__init__('process_image')
 
         self.subscription = self.create_subscription(
             Image,

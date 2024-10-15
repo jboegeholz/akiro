@@ -5,7 +5,7 @@ import serial
 
 class DriveBot(Node):
     def __init__(self):
-        super().__init__('cmd_vel_subscriber')
+        super().__init__('drive_bot')
 
         try:
             self.serial_port = serial.Serial(
@@ -14,7 +14,7 @@ class DriveBot(Node):
                 timeout=1
             )
         except serial.SerialException as e:
-            self.get_logger().error(e)
+            #self.get_logger().error(e)
             self.get_logger().error('Could not open serial port. Using loopback instead.')
             self.serial_port = serial.serial_for_url('loop://', timeout=1)
 

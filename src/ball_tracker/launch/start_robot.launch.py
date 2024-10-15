@@ -3,11 +3,11 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    detect_node = Node(
+    process_image_node = Node(
             package='ball_tracker',
             executable='process_image'
          )
-    follow_node = Node(
+    follow_ball_node = Node(
             package='ball_tracker',
             executable='follow_ball'
          )
@@ -28,8 +28,8 @@ def generate_launch_description():
             executable='drive_bot'
          )
     return LaunchDescription([
-        #detect_node,
-        #follow_node,
-        #camera_node,
+        process_image_node,
+        follow_ball_node,
+        camera_node,
         drive_bot_node
     ])
