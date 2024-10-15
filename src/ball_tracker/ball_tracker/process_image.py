@@ -39,7 +39,8 @@ class ImageSubscriber(Node):
             for keypoint in keypoints:
                 if keypoint.size > biggest_keypoint.size:
                     biggest_keypoint = keypoint
-            self.publisher.publish(Point(x=biggest_keypoint.pt[0], y=biggest_keypoint.pt[1], z=biggest_keypoint.size))
+            normalized_keypoint = Point(x=biggest_keypoint.pt[0] / image.shape[1], y=biggest_keypoint.pt[1] / image.shape[0], z=biggest_keypoint.size)
+            self.publisher.publish(normalized_keypoint)
 
         image_with_keypoints = cv2.drawKeypoints(working_image, keypoints, np.array([]), (0, 0, 255),
                                                  cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
