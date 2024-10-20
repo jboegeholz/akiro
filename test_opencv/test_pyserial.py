@@ -11,4 +11,4 @@ def test_pyserial():
         )
     except SerialException as e:
         print(e)
-
+    assert serial_port
