@@ -1,0 +1,32 @@
+# ROS 2 Humble Installation
+sudo apt install software-properties-common
+sudo add-apt-repository universe
+sudo apt update && sudo apt install curl -y
+sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu
+sudo apt update && sudo apt upgrade
+sudo apt install ros-humble-desktop
+sudo apt install ros-dev-tools
+echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+# Camera
+sudo apt install raspi-config
+sudo apt install libraspberrypi-bin
+sudo apt install v4l-utils
+sudo apt install ros-humble-v4l2-camera
+sudo apt install ros-humble-image-transport-plugins
+# Packages
+sudo apt install python3-colcon-common-extensions
+sudo apt install ros-humble-rclpy
+sudo apt install ros-humble-std-msgs
+# OpenCV
+sudo apt install python3-opencv
+sudo apt install ros-humble-cv-bridge
+sudo apt install python3-pip
+pip install pyserial
+sudo apt remove brltty
+sudo apt install ros-humble-teleop-twist-joy
+sudo apt install python3-roslaunch
+sudo apt install ros-humble-twist-mux
+sudo apt install ros-humbl-teleop-twist-keyboard
+
