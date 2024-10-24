@@ -27,7 +27,7 @@ class ImageSubscriber(Node):
         try:
             image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
             self.get_logger().info('Receive image data...')
-        except CvBridgeError as e:
+        except CvBridgeError:
             self.get_logger().error("CvBridgeError!")
             return
 

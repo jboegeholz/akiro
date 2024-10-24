@@ -63,7 +63,7 @@ def main():
     args = get_arguments()
 
     range_filter = args['filter'].upper()
-
+    camera = None
     if args['image']:
         image = cv2.imread(args['image'])
 
@@ -75,7 +75,8 @@ def main():
         camera = cv2.VideoCapture(0)
 
     setup_trackbars(range_filter)
-
+    frame_to_thresh = None
+    image = None
     while True:
         if args['webcam']:
             ret, image = camera.read()

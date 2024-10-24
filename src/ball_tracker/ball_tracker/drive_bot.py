@@ -13,8 +13,7 @@ class DriveBot(Node):
                 baudrate=9600,
                 timeout=1
             )
-        except serial.SerialException as e:
-            #self.get_logger().error(e)
+        except serial.SerialException:
             self.get_logger().error('Could not open serial port. Using loopback instead.')
             self.serial_port = serial.serial_for_url('loop://', timeout=1)
 
