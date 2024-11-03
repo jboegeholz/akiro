@@ -5,7 +5,7 @@ float angular_z = 0.0;
 SoftwareSerial mySerial(10,11);	// 10-> Rx, 11->Tx  
 void setup() {
   Serial.begin(9600);
-  mySerial.begin(9600, SERIAL_8N1);
+  mySerial.begin(9600);
 }
 
 void loop() {
