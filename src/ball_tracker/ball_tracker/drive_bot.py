@@ -2,6 +2,7 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 import serial
+import struct
 
 class DriveBot(Node):
     def __init__(self):
@@ -11,7 +12,11 @@ class DriveBot(Node):
             self.serial_port = serial.Serial(
                 port='/dev/ttyUSB0',
                 baudrate=9600,
-                timeout=1
+                timeout=1,
+                # 8N1
+                bytesize=serial.EIGHTBITS,
+                parity=serial.PARITY_NONE,
+                stopbits=serial.STOPBITS_ONE
             )
         except serial.SerialException:
             self.get_logger().error('Could not open serial port. Using loopback instead.')
@@ -39,8 +44,8 @@ class DriveBot(Node):
         self.get_logger().info(
             f'Received cmd_vel - linear: ({linear_x}, {linear_y}, {linear_z}), angular: ({angular_x}, {angular_y}, {angular_z})')
 
-        serial_message = f"linear: {linear_x}, angular: {angular_z}\n"
-        self.serial_port.write(serial_message.encode('utf-8'))
+        serial_message = struct.pack('ff', linear_x, angular_z)
+        self.serial_port.write(serial_message)
         self.get_logger().info(f'Sent over serial: {serial_message}')
         
     def destroy(self):
