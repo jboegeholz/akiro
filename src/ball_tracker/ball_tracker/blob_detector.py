@@ -17,7 +17,8 @@ class BlobDetector:
         self.detector = cv2.SimpleBlobDetector_create(self.params)
 
     def detect_blob(self, image):
-        image = cv2.blur(image, (5, 5))
+        #image = cv2.blur(image, (5, 5))
+        image = cv2.GaussianBlur(image, (5, 5), 1.5)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
         image = cv2.inRange(image, self.hsv_thresh_min, self.hsv_thresh_max)
         image = 255 - image  # invert color white -> black
