@@ -8,15 +8,12 @@ def generate_launch_description():
 
     twist_mux_config_file_path = os.path.join(package_path, 'config', 'twist_mux.yaml')
     twist_joy_config_file_path = os.path.join(package_path, 'config', 'twist_joy.yaml')
-    teleop_twist_key = Node(
-            package='teleop_twist_keyboard',
-            executable='teleop_twist_keyboard',
-            name='teleop_twist_keyboard_node',
-            output='screen',
-            prefix="xterm -hold -e",
-            remappings=[
-                ('/cmd_vel', '/cmd_vel_sec')
-            ]
+
+    joy_node = Node(
+            package='joy',
+            executable='joy_node',
+            name='joy_node',
+            output='screen'
         )
     teleop_twist_joy = Node(
             package='teleop_twist_joy',
@@ -35,7 +32,7 @@ def generate_launch_description():
             parameters=[twist_mux_config_file_path]
         )
     return LaunchDescription([
-        teleop_twist_key,
-        #teleop_twist_joy,
-        #twist_mux
+        joy_node,
+        teleop_twist_joy,
+        twist_mux
     ])
