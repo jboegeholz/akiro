@@ -4,6 +4,7 @@ from ament_index_python.packages import get_package_share_directory
 import os
 
 def generate_launch_description():
+    ld = LaunchDescription()
     package_path = get_package_share_directory('ball_tracker')
 
     twist_mux_config_file_path = os.path.join(package_path, 'config', 'twist_mux.yaml')
@@ -31,8 +32,8 @@ def generate_launch_description():
             output='screen',
             parameters=[twist_mux_config_file_path]
         )
-    return LaunchDescription([
-        joy_node,
-        teleop_twist_joy,
-        twist_mux
-    ])
+
+    ld.add_action(joy_node)
+    ld.add_action(teleop_twist_joy)
+    ld.add_action(twist_mux)
+    return ld
