@@ -1,9 +1,26 @@
-# teleop_twist_joy/config/config.yaml
-axis_linear: 1  # z. B. linke Achse vor/zurück
-scale_linear: 0.5
-axis_angular: 0  # z. B. rechte Achse links/rechts
-scale_angular: 1.0
-enable_button: 4  # Taste, um Bewegung zu aktivieren
-enable_turbo_button: 5  # Taste, um den Boost-Modus zu aktivieren
-scale_linear_turbo: 1.0
-scale_angular_turbo: 2.0
+joy_node:
+  ros__parameters:
+    device_id: 0
+    deadzone: 0.05
+    autorepeat_rate: 20.0
+
+teleop_node:
+  ros__parameters:
+    axis_linear:
+      x: 1
+    scale_linear:
+      x: 0.5
+    scale_linear_turbo:
+      x: 1.0
+
+    axis_angular:
+      yaw: 0
+    scale_angular:
+      yaw: 0.5
+    scale_angular_turbo:
+      yaw: 1.0
+
+    enable_button: 6
+    enable_turbo_button: 7
+
+    require_enable_button: true

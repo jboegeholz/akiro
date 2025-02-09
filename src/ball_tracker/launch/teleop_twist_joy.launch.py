@@ -7,7 +7,7 @@ def generate_launch_description():
     ld = LaunchDescription()
     package_path = get_package_share_directory('ball_tracker')
 
-    twist_mux_config_file_path = os.path.join(package_path, 'config', 'twist_mux.yaml')
+    #twist_mux_config_file_path = os.path.join(package_path, 'config', 'twist_mux.yaml')
     twist_joy_config_file_path = os.path.join(package_path, 'config', 'twist_joy.yaml')
 
     joy_node = Node(
@@ -18,22 +18,22 @@ def generate_launch_description():
         )
     teleop_twist_joy = Node(
             package='teleop_twist_joy',
-            executable='teleop_twist_joy',
+            executable='teleop_node',
             output='screen',
             remappings=[
-                ('/cmd_vel', '/cmd_vel_prio')
+                ('/cmd_vel', '/turtle1/cmd_vel'),
             ],
             parameters=[twist_joy_config_file_path]
         )
-    twist_mux = Node(
-            package='twist_mux',
-            executable='twist_mux',
-            name='twist_mux',
-            output='screen',
-            parameters=[twist_mux_config_file_path]
-        )
+    # twist_mux = Node(
+    #         package='twist_mux',
+    #         executable='twist_mux',
+    #         name='twist_mux',
+    #         output='screen',
+    #         parameters=[twist_mux_config_file_path]
+    #     )
 
     ld.add_action(joy_node)
     ld.add_action(teleop_twist_joy)
-    ld.add_action(twist_mux)
+    #ld.add_action(twist_mux)
     return ld
