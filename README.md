@@ -1,5 +1,7 @@
 # AKIRO - ROS 2 Robot Project
+    
 
+    v4l2-ctl --list-devices
 
 ## Nodes startenv ia Launchfile
 
@@ -11,7 +13,7 @@
 
 ## check published topics
     
-        ros2 topic list
+    ros2 topic list
 
 ## Lock dependencies
 
