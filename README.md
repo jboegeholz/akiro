@@ -1,9 +1,10 @@
 # AKIRO - ROS 2 Robot Project
     
+## Check camera status
 
     v4l2-ctl --list-devices
 
-## Nodes startenv ia Launchfile
+## Start nodes via launchfile
 
     ros2 launch src/launch/start_robot.launch.py 
 
