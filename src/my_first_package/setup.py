@@ -22,6 +22,8 @@ setup(
         'console_scripts': [
             'talker = my_first_package.publisher:main',
             'listener = my_first_package.subscriber:main',
+
         ],
+        'pytest11': ['my_package = test'],
     },
 )
