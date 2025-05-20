@@ -5,7 +5,7 @@ package_name = 'my_first_package'
 setup(
     name=package_name,
     version='0.0.0',
-    packages=find_packages(exclude=['test']),
+    packages=find_packages(exclude=['tests']),
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
@@ -22,8 +22,6 @@ setup(
         'console_scripts': [
             'talker = my_first_package.publisher:main',
             'listener = my_first_package.subscriber:main',
-
         ],
-        'pytest11': ['my_package = test'],
     },
 )
