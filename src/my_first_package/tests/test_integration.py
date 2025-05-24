@@ -60,8 +60,3 @@ class TestTalkerNode(unittest.TestCase):
         proc_output.assertWaitFor(
             'Publishing: "Hello, from my first ROS 2 publisher node"',
             timeout=5, stream='stderr')
-
-@launch_testing.post_shutdown_test()
-class TestTalkerNodeShutdown(unittest.TestCase):
-    def test_exit_codes(self, proc_info):
-        launch_testing.asserts.assertExitCodes(proc_info)

@@ -1,7 +1,7 @@
 # converts detected blob keypoints to drive commands
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import Point
+from geometry_msgs.msg import Point, Vector3
 from geometry_msgs.msg import Twist
 
 
