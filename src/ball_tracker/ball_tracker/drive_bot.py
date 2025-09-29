@@ -24,10 +24,10 @@ class DriveBot(Node):
 
         self.subscription = self.create_subscription(
             Twist,
-            '/cmd_vel',
+            '/cmd_vel_out',
             self.listener_callback,
             10)
-        self.get_logger().info('<< Subscribed to /cmd_vel')
+        self.get_logger().info('<< Subscribed to /cmd_vel_out')
 
 
     def listener_callback(self, msg):
