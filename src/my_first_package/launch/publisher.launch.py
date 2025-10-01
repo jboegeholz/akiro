@@ -8,7 +8,6 @@ def generate_launch_description():
     publisher_node = Node(
             package='demo_nodes_py',
             executable='talker',
-            name='noisy',
             output='screen'
         )
     ld.add_action(publisher_node)

@@ -9,10 +9,11 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     ld = LaunchDescription()
-    package_dir = get_package_share_directory('my_first_package')
 
+    package_dir = get_package_share_directory('my_first_package')
     publisher_launch_path = os.path.join(package_dir, 'launch', 'publisher.launch.py')
     publisher_launch_description = IncludeLaunchDescription(PythonLaunchDescriptionSource(publisher_launch_path))
+    ld.add_action(publisher_launch_description)
 
     subscriber_node = Node(
             package='demo_nodes_py',
@@ -22,5 +23,4 @@ def generate_launch_description():
         )
 
     ld.add_action(subscriber_node)
-    ld.add_action(publisher_launch_description)
     return ld
