@@ -1,8 +1,7 @@
-from launch import LaunchDescription
-import launch
+from launch import LaunchDescription, logging
 
 def generate_launch_description():
     ld = LaunchDescription()
-    logger = launch.logging.get_logger(__name__)
+    logger = logging.get_logger(__name__)
     logger.info(f"Hello from {__name__}")
     return ld
