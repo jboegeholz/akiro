@@ -5,7 +5,7 @@ import os
 
 def generate_launch_description():
     ld = LaunchDescription()
-    package_path = get_package_share_directory('ball_tracker')
+    package_path = get_package_share_directory('my_first_package')
 
     twist_joy_config_file_path = os.path.join(package_path, 'config', 'twist_joy_ps3.yaml')
 
