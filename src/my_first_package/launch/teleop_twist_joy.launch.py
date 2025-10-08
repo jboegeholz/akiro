@@ -15,9 +15,10 @@ def generate_launch_description():
             name='joy_node',
             output='screen'
         )
-    teleop_twist_joy = Node(
+    teleop_node = Node(
             package='teleop_twist_joy',
             executable='teleop_node',
+            name='teleop_node',
             output='screen',
             remappings=[
                 ('/cmd_vel', '/turtle1/cmd_vel')
@@ -31,6 +32,6 @@ def generate_launch_description():
         executable='turtlesim_node'
     )
     ld.add_action(joy_node)
-    ld.add_action(teleop_twist_joy)
+    ld.add_action(teleop_node)
     ld.add_action(turtlesim_node)
     return ld
