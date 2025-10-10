@@ -4,6 +4,7 @@ import os
 
 SHUTDOWN_PIN = 17
 
+# TODO rewrite into ROS node
 if __name__ == '__main__':
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(SHUTDOWN_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)

@@ -17,9 +17,10 @@ def generate_launch_description():
             name='joy_node',
             output='screen'
         )
-    teleop_twist_joy = Node(
+    teleop_node = Node(
             package='teleop_twist_joy',
             executable='teleop_node',
+            name='teleop_node',
             output='screen',
             remappings=[
                 ('/cmd_vel', '/cmd_vel_prio'),
@@ -35,6 +36,6 @@ def generate_launch_description():
         )
 
     ld.add_action(joy_node)
-    ld.add_action(teleop_twist_joy)
+    ld.add_action(teleop_node)
     ld.add_action(twist_mux)
     return ld
