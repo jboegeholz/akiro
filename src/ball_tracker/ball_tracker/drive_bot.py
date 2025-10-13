@@ -3,11 +3,13 @@ from rclpy.node import Node
 from geometry_msgs.msg import Twist
 import serial
 import struct
+import math
 
 class DriveBot(Node):
     def __init__(self):
         super().__init__('drive_bot')
-
+        self.wheel_radius = 0.05 #
+        self.wheel_base = 0.2
         try:
             self.serial_port = serial.Serial(
                 port='/dev/ttyUSB0',
@@ -30,8 +32,18 @@ class DriveBot(Node):
         self.get_logger().info('<< Subscribed to /cmd_vel_out')
 
 
+
+    def twist_to_rpm(self, linear_x, angular_z):
+        v_l = linear_x - angular_z * (self.wheel_base / 2)
+        v_r = linear_x + angular_z * (self.wheel_base / 2)
+
+        rpm_l = (v_l / (2 * math.pi * self.wheel_radius)) * 60
+        rpm_r = (v_r / (2 * math.pi * self. wheel_radius)) * 60
+
+        return rpm_l, rpm_r
+
     def listener_callback(self, msg):
-        self.get_logger().info('Reveived msg from cmd_vel_out')
+        self.get_logger().info('Received msg from cmd_vel_out')
 
         linear_x = msg.linear.x
         linear_y = msg.linear.y
@@ -44,7 +56,8 @@ class DriveBot(Node):
         self.get_logger().info(
             f'Received cmd_vel - linear: ({linear_x}, {linear_y}, {linear_z}), angular: ({angular_x}, {angular_y}, {angular_z})')
 
-        serial_message = struct.pack('ff', linear_x, angular_z)
+        rpm_l, rpm_r = self.twist_to_rpm(linear_x, angular_z)
+        serial_message = struct.pack('ii', rpm_l, rpm_r)
         self.serial_port.write(serial_message)
         self.get_logger().info(f'Sent over serial: {serial_message}')
         

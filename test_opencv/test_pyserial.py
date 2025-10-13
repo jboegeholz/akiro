@@ -1,12 +1,16 @@
 import struct
-
+import pytest
 from serial.serialutil import SerialException
 import serial
 
-def test_pyserial_on_mac_os():
+@pytest.mark.mac_os
+def test_pyserial_on_mac_os_loopback():
+    """
+    connect tx and rx to test loopback
+    """
     try:
         serial_port = serial.Serial(
-            port='/dev/cu.usbserial-110',  # for mac os
+            port='/dev/cu.usbserial-1120',  # for mac os
             baudrate=9600,
             timeout=1
         )
@@ -17,16 +21,19 @@ def test_pyserial_on_mac_os():
     assert serial_port.readline() == b"asd"
 
 def test_pyserial_struct():
+    serial_message = struct.pack('ff', 0.5, 1.0)
+    values = struct.unpack('ff',serial_message)
+    assert values[0] == 0.5
+    assert values[1] == 1.0
+
+@pytest.mark.mac_os
+def test_pyserial_on_ubuntu():
     try:
         serial_port = serial.Serial(
-            port='/dev/cu.usbserial-110',  # for mac os
-            baudrate=9600,
+            port='/dev/cu.usbserial-1120',
             timeout=1
         )
     except SerialException as e:
         serial_port = serial.serial_for_url('loop://', timeout=1)
-    serial_message = struct.pack('ff', 0.5, 1.0)
+    serial_message = struct.pack('ii', 23, 12)
     serial_port.write(serial_message)
-    values = struct.unpack('ff',serial_port.readline())
-    assert values[0] == 0.5
-    assert values[1] == 1.0
