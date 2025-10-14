@@ -34,7 +34,7 @@ class DriveBot(Node):
 
 
     def twist_to_rpm(self, linear_x, angular_z):
-        v_l = linear_x - angular_z * (self.wheel_base / 2)
+        v_l = linear_x - angular_z * (self.wheel_base / 2) # TODO refactor constants
         v_r = linear_x + angular_z * (self.wheel_base / 2)
 
         rpm_l = (v_l / (2 * math.pi * self.wheel_radius)) * 60
