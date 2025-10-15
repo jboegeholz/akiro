@@ -28,6 +28,10 @@ Install all python dependencies via
     ros2 run ball_tracker start_robot.launch.py
 
 ## Trouble Shooting
+### Issues with serial port
+     
+    sudo usermod -a -G dialout $USER
+
 ### Check camera status
 
     v4l2-ctl --list-devices
