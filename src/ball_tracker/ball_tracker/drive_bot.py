@@ -57,9 +57,11 @@ class DriveBot(Node):
             f'Received cmd_vel - linear: ({linear_x}, {linear_y}, {linear_z}), angular: ({angular_x}, {angular_y}, {angular_z})')
 
         rpm_l, rpm_r = self.twist_to_rpm(linear_x, angular_z)
-        serial_message = struct.pack('ii', rpm_l, rpm_r)
-        self.serial_port.write(serial_message)
-        self.get_logger().info(f'Sent over serial: {serial_message}')
+        self.get_logger().info(f'Converted from twist: RPM left: {rpm_l}, RPM right {rpm_r}')
+        msg = struct.pack('ii', int(rpm_l), int(rpm_r))
+        self.serial_port.write(msg)
+        pretty_hex = ' '.join(f'{b:02x}' for b in msg)
+        self.get_logger().info(f'Sent over serial: {pretty_hex}')
         
     def destroy(self):
         self.serial_port.close()
