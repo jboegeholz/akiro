@@ -1,3 +1,4 @@
+#include <memory>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 
@@ -17,8 +18,8 @@ public:
         subscription_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
           "/camera/depth/points",
           10,
-          std::bind(&VoxelFilterNode::callback, this, std::placeholders::_1)
-        );
+          [this](const sensor_msgs::msg::PointCloud2::SharedPtr msg) {callback(msg);}
+          );
 
         publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>(
           "/voxel_points", 10);
@@ -27,17 +28,17 @@ public:
     }
 
 private:
-    void callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
+    void callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg) const
     {
-        double leaf_size = this->get_parameter("leaf_size").as_double();
+        const float leaf_size = static_cast<float>(this->get_parameter("leaf_size").as_double());
 
-        pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+        const auto cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
         pcl::fromROSMsg(*msg, *cloud);
 
         if (cloud->empty())
             return;
 
-        pcl::PointCloud<pcl::PointXYZ>::Ptr filtered(new pcl::PointCloud<pcl::PointXYZ>);
+        const auto filtered = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
 
         pcl::VoxelGrid<pcl::PointXYZ> voxel_filter;
         voxel_filter.setInputCloud(cloud);
