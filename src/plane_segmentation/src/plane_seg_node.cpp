@@ -13,9 +13,11 @@ public:
   PlaneSegmentation() : Node("plane_segmentation")
   {
     subscription_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-      "/camera/depth/points",
+      "/voxel_points",
       10,
-      std::bind(&PlaneSegmentation::callback, this, std::placeholders::_1)
+    	[this](sensor_msgs::msg::PointCloud2::SharedPtr msg) {
+        this->callback(msg);
+    	}
     );
 
     plane_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("plane_points", 10);
