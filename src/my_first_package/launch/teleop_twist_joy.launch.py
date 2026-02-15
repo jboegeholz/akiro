@@ -5,11 +5,9 @@ import os
 
 def generate_launch_description():
     ld = LaunchDescription()
-    package_path = get_package_share_directory('ball_tracker')
+    package_path = get_package_share_directory('my_first_package')
 
-    twist_mux_config_file_path = os.path.join(package_path, 'config', 'twist_mux.yaml')
-    twist_joy_config_file_path = os.path.join(package_path, 'config', 'twist_joy_xbox.yaml')
-    #twist_joy_config_file_path = os.path.join(package_path, 'config', 'twist_joy_logitech.yaml')
+    twist_joy_config_file_path = os.path.join(package_path, 'config', 'twist_joy_ps3.yaml')
 
     joy_node = Node(
             package='joy',
@@ -23,19 +21,17 @@ def generate_launch_description():
             name='teleop_node',
             output='screen',
             remappings=[
-                ('/cmd_vel', '/cmd_vel_prio'),
+                ('/cmd_vel', '/turtle1/cmd_vel')
             ],
             parameters=[twist_joy_config_file_path]
         )
-    twist_mux = Node(
-            package='twist_mux',
-            executable='twist_mux',
-            name='twist_mux',
-            output='screen',
-            parameters=[twist_mux_config_file_path]
-        )
 
+    #ros2 run turtlesim turtlesim_node
+    turtlesim_node = Node(
+        package='turtlesim',
+        executable='turtlesim_node'
+    )
     ld.add_action(joy_node)
     ld.add_action(teleop_node)
-    ld.add_action(twist_mux)
+    ld.add_action(turtlesim_node)
     return ld
