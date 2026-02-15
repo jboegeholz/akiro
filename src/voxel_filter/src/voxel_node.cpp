@@ -12,7 +12,6 @@ class VoxelFilterNode : public rclcpp::Node
 public:
     VoxelFilterNode() : Node("voxel_filter_node")
     {
-        // Parameter für Leaf Size
         this->declare_parameter("leaf_size", 0.005);
 
         subscription_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(

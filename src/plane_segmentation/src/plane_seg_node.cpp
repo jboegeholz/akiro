@@ -22,6 +22,7 @@ public:
 
     plane_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("plane_points", 10);
     objects_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("objects_points", 10);
+    RCLCPP_INFO(this->get_logger(), "Plane Segmentation Node started.");
   }
 
 private:
