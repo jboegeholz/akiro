@@ -2,7 +2,7 @@ import os
 from glob import glob
 from setuptools import find_packages, setup
 
-package_name = 'image_pipeline'
+package_name = 'image_pipeline_bringup'
 
 setup(
     name=package_name,
