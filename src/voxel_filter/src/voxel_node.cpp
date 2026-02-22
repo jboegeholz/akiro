@@ -15,7 +15,7 @@ public:
         this->declare_parameter("leaf_size", 0.005);
 
         subscription_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-          "/camera/depth/points",
+          "/kinect/points",
           10,
           [this](const sensor_msgs::msg::PointCloud2::SharedPtr msg) {callback(msg);}
           );

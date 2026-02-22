@@ -11,18 +11,6 @@ def generate_launch_description():
         output='screen'
     )
 
-    depth_to_cloud = Node(
-        package='depth_image_proc',
-        executable='point_cloud_xyz_node',
-        name='depth_to_pointcloud',
-        output='screen',
-        remappings=[
-            ('image_rect', '/depth/image_raw'),
-            ('camera_info', '/depth/camera_info'),
-            ('points', '/camera/depth/points')
-        ]
-    )
-
     voxel_node = Node(
         package='voxel_filter',
         executable='voxel_node',
@@ -30,10 +18,6 @@ def generate_launch_description():
         output='screen',
         parameters=[
             {'leaf_size': 0.005}
-        ],
-        remappings=[
-            ('/camera/depth/points', '/camera/depth/points'),
-            ('/voxel_points', '/voxel_points')
         ]
     )
 
@@ -42,11 +26,6 @@ def generate_launch_description():
         executable='plane_seg_node',
         name='plane_segmentation_node',
         output='screen',
-        remappings=[
-            ('/camera/depth/points', '/voxel_points'),
-            ('/plane_points', '/plane_points'),
-            ('/objects_points', '/objects_points')
-        ]
     )
 
     return LaunchDescription([
