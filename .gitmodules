@@ -1,0 +1,8 @@
+[submodule "src/kinect_ros2"]
+	path = src/kinect_ros2
+	url = https://github.com/fadlio/kinect_ros2.git
+	branch = galactic
+[submodule "src/image_pipeline"]
+	path = src/image_pipeline
+	url = https://github.com/ros-perception/image_pipeline
+	branch = humble
