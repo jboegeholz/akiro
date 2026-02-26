@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-struct CpuTimes {
+struct CpuLoad {
     std::string name;        // "cpu", "cpu0", "cpu1", …
     unsigned long long user, nice, system, idle, iowait, irq, softirq, steal;
 
@@ -35,14 +35,14 @@ private:
             RCLCPP_INFO(this->get_logger(), "%s: Active %.2f%%", ct.name.c_str(), 100.0 * ct.active() / ct.total());
         }
     }
-    std::vector<CpuTimes> read_cpu_times() {
-        std::vector<CpuTimes> result;
+    std::vector<CpuLoad> read_cpu_times() {
+        std::vector<CpuLoad> result;
         std::ifstream f("/proc/stat");
         std::string line;
         while (std::getline(f, line)) {
             if (line.rfind("cpu", 0) != 0) break;          // lines stop starting with "cpu"
             std::istringstream ss(line);
-            CpuTimes ct{};
+            CpuLoad ct{};
             ss >> ct.name >> ct.user >> ct.nice >> ct.system >> ct.idle
                >> ct.iowait >> ct.irq >> ct.softirq >> ct.steal;
             result.emplace_back(ct);
