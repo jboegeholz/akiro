@@ -8,10 +8,11 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(akiro_interfaces REQUIRED)
 
 
 add_executable(system_monitor_node src/system_monitor_node.cpp)
-ament_target_dependencies(system_monitor_node rclcpp)
+ament_target_dependencies(system_monitor_node rclcpp akiro_interfaces)
 
 install(TARGETS
         system_monitor_node
