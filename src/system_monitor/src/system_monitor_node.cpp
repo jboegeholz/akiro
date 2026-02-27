@@ -1,5 +1,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "akiro_interfaces/msg/cpu_load.hpp"
+#include <algorithm>
+#include <cctype>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -32,6 +34,50 @@ public:
                                          std::bind(&MyNode::timerCallback, this));
     }
 private:
+    static bool try_parse_frequency_mhz(const std::string &line, double &frequency_mhz)
+    {
+        // Find the first numeric token in the line.
+        const auto first_numeric = line.find_first_of("+-0123456789");
+        if (first_numeric == std::string::npos) {
+            return false;
+        }
+
+        size_t end_numeric = first_numeric;
+        while (end_numeric < line.size()) {
+            const char c = line[end_numeric];
+            if (!(std::isdigit(static_cast<unsigned char>(c)) || c == '.' || c == '+' || c == '-')) {
+                break;
+            }
+            ++end_numeric;
+        }
+
+        if (end_numeric == first_numeric) {
+            return false;
+        }
+
+        double value = 0.0;
+        try {
+            value = std::stod(line.substr(first_numeric, end_numeric - first_numeric));
+        } catch (const std::exception &) {
+            return false;
+        }
+
+        std::string lowered = line;
+        std::transform(lowered.begin(), lowered.end(), lowered.begin(),
+                       [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+
+        if (lowered.find("ghz") != std::string::npos) {
+            frequency_mhz = value * 1000.0;
+        } else if (lowered.find("khz") != std::string::npos) {
+            frequency_mhz = value / 1000.0;
+        } else {
+            // Default to MHz for "cpu MHz" and most "clock" lines.
+            frequency_mhz = value;
+        }
+
+        return frequency_mhz > 0.0;
+    }
+
     void timerCallback()
     {
         auto current_state = read_cpu_times();
@@ -108,20 +154,12 @@ private:
             std::string line;
             while (std::getline(cpuinfo_file, line)) {
                 if (line.find("cpu MHz") != std::string::npos || line.find("clock") != std::string::npos) {
-                    size_t pos = line.find(':');
-                    if (pos != std::string::npos) {
-                        try {
-                            std::string freq_part = line.substr(pos + 1);
-                            // Remove leading/trailing whitespace
-                            freq_part.erase(0, freq_part.find_first_not_of(" \t"));
-                            freq_part.erase(freq_part.find_last_not_of(" \t") + 1);
-                            cpu_load_msg.cpu_frequency_mhz = std::stod(freq_part);
-                            RCLCPP_DEBUG(this->get_logger(), "CPU frequency from cpuinfo: %.2f MHz",
-                                        cpu_load_msg.cpu_frequency_mhz);
-                            break;
-                        } catch (const std::exception& e) {
-                            RCLCPP_WARN(this->get_logger(), "Failed to parse cpuinfo frequency: %s", e.what());
-                        }
+                    double parsed_frequency_mhz = 0.0;
+                    if (try_parse_frequency_mhz(line, parsed_frequency_mhz)) {
+                        cpu_load_msg.cpu_frequency_mhz = parsed_frequency_mhz;
+                        RCLCPP_DEBUG(this->get_logger(), "CPU frequency from cpuinfo: %.2f MHz",
+                                     cpu_load_msg.cpu_frequency_mhz);
+                        break;
                     }
                 }
             }
