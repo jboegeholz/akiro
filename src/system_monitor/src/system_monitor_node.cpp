@@ -83,19 +83,55 @@ private:
             loadavg_file.close();
         }
 
-        // Read CPU frequency from /proc/cpuinfo (simplified - first processor)
-        std::ifstream cpuinfo_file("/proc/cpuinfo");
-        std::string line;
-        while (std::getline(cpuinfo_file, line)) {
-            if (line.find("cpu MHz") != std::string::npos) {
-                size_t pos = line.find(':');
-                if (pos != std::string::npos) {
-                    cpu_load_msg.cpu_frequency_mhz = std::stod(line.substr(pos + 1));
-                    break;
+        // Read CPU frequency from multiple sources
+        cpu_load_msg.cpu_frequency_mhz = 0.0; // Default value
+
+        // Try to read current frequency from /sys filesystem first (more accurate)
+        std::ifstream freq_file("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq");
+        if (freq_file.is_open()) {
+            std::string freq_str;
+            if (std::getline(freq_file, freq_str)) {
+                try {
+                    // scaling_cur_freq is in kHz, convert to MHz
+                    double freq_khz = std::stod(freq_str);
+                    cpu_load_msg.cpu_frequency_mhz = freq_khz / 1000.0;
+                    RCLCPP_DEBUG(this->get_logger(), "CPU frequency from scaling_cur_freq: %.2f MHz",
+                                cpu_load_msg.cpu_frequency_mhz);
+                } catch (const std::exception& e) {
+                    RCLCPP_WARN(this->get_logger(), "Failed to parse scaling_cur_freq: %s", e.what());
                 }
             }
+            freq_file.close();
+        } else {
+            // Fallback to /proc/cpuinfo
+            std::ifstream cpuinfo_file("/proc/cpuinfo");
+            std::string line;
+            while (std::getline(cpuinfo_file, line)) {
+                if (line.find("cpu MHz") != std::string::npos || line.find("clock") != std::string::npos) {
+                    size_t pos = line.find(':');
+                    if (pos != std::string::npos) {
+                        try {
+                            std::string freq_part = line.substr(pos + 1);
+                            // Remove leading/trailing whitespace
+                            freq_part.erase(0, freq_part.find_first_not_of(" \t"));
+                            freq_part.erase(freq_part.find_last_not_of(" \t") + 1);
+                            cpu_load_msg.cpu_frequency_mhz = std::stod(freq_part);
+                            RCLCPP_DEBUG(this->get_logger(), "CPU frequency from cpuinfo: %.2f MHz",
+                                        cpu_load_msg.cpu_frequency_mhz);
+                            break;
+                        } catch (const std::exception& e) {
+                            RCLCPP_WARN(this->get_logger(), "Failed to parse cpuinfo frequency: %s", e.what());
+                        }
+                    }
+                }
+            }
+            cpuinfo_file.close();
         }
-        cpuinfo_file.close();
+
+        if (cpu_load_msg.cpu_frequency_mhz == 0.0) {
+            RCLCPP_WARN_THROTTLE(this->get_logger(), *this->get_clock(), 10000,
+                                 "Could not determine CPU frequency");
+        }
 
         // Publish the message
         cpu_load_publisher_->publish(cpu_load_msg);
@@ -103,6 +139,7 @@ private:
         // Update previous state for next calculation
         previous_state_ = current_state;
     }
+
     std::vector<CpuLoad> read_cpu_times() {
         std::vector<CpuLoad> result;
         std::ifstream f("/proc/stat");
@@ -117,6 +154,7 @@ private:
         }
         return result;
     }
+
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::Publisher<akiro_interfaces::msg::CpuLoad>::SharedPtr cpu_load_publisher_;
     std::vector<CpuLoad> previous_state_;
