@@ -18,5 +18,14 @@ float64 load_avg_15min
 # CPU frequency in MHz
 float64 cpu_frequency_mhz
 
+# RAM total in MB
+float64 ram_total_mb
+
+# RAM used in MB
+float64 ram_used_mb
+
+# RAM usage as percentage (0.0 to 100.0)
+float64 ram_usage_percent
+
 # Header with timestamp and frame information
 std_msgs/Header header

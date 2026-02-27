@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 struct CpuLoad {
@@ -76,6 +77,57 @@ private:
         }
 
         return frequency_mhz > 0.0;
+    }
+
+    static bool read_ram_usage(double &ram_total_mb, double &ram_used_mb, double &ram_usage_percent)
+    {
+        std::ifstream meminfo_file("/proc/meminfo");
+        if (!meminfo_file.is_open()) {
+            return false;
+        }
+
+        std::unordered_map<std::string, unsigned long long> values_kb;
+        std::string key;
+        unsigned long long value_kb = 0;
+        std::string unit;
+
+        while (meminfo_file >> key >> value_kb >> unit) {
+            if (!key.empty() && key.back() == ':') {
+                key.pop_back();
+            }
+            values_kb[key] = value_kb;
+        }
+
+        const auto total_it = values_kb.find("MemTotal");
+        if (total_it == values_kb.end() || total_it->second == 0) {
+            return false;
+        }
+
+        unsigned long long available_kb = 0;
+        const auto available_it = values_kb.find("MemAvailable");
+        if (available_it != values_kb.end()) {
+            available_kb = available_it->second;
+        } else {
+            // Fallback approximation when MemAvailable is missing.
+            available_kb += values_kb.count("MemFree") ? values_kb["MemFree"] : 0ULL;
+            available_kb += values_kb.count("Buffers") ? values_kb["Buffers"] : 0ULL;
+            available_kb += values_kb.count("Cached") ? values_kb["Cached"] : 0ULL;
+            available_kb += values_kb.count("SReclaimable") ? values_kb["SReclaimable"] : 0ULL;
+            const auto shmem_it = values_kb.find("Shmem");
+            if (shmem_it != values_kb.end() && available_kb > shmem_it->second) {
+                available_kb -= shmem_it->second;
+            }
+        }
+
+        const unsigned long long total_kb = total_it->second;
+        const unsigned long long used_kb = (available_kb <= total_kb) ? (total_kb - available_kb) : 0ULL;
+
+        ram_total_mb = static_cast<double>(total_kb) / 1024.0;
+        ram_used_mb = static_cast<double>(used_kb) / 1024.0;
+        ram_usage_percent = (total_kb > 0)
+            ? (100.0 * static_cast<double>(used_kb) / static_cast<double>(total_kb))
+            : 0.0;
+        return true;
     }
 
     void timerCallback()
@@ -166,9 +218,18 @@ private:
             cpuinfo_file.close();
         }
 
-        if (cpu_load_msg.cpu_frequency_mhz == 0.0) {
+        if (cpu_load_msg.cpu_frequency_mhz == 0.0 && !reported_unavailable_cpu_frequency_) {
+            RCLCPP_INFO(this->get_logger(),
+                        "CPU frequency not available on this system (no cpufreq/cpuinfo frequency fields).");
+            reported_unavailable_cpu_frequency_ = true;
+        }
+
+        cpu_load_msg.ram_total_mb = 0.0;
+        cpu_load_msg.ram_used_mb = 0.0;
+        cpu_load_msg.ram_usage_percent = 0.0;
+        if (!read_ram_usage(cpu_load_msg.ram_total_mb, cpu_load_msg.ram_used_mb, cpu_load_msg.ram_usage_percent)) {
             RCLCPP_WARN_THROTTLE(this->get_logger(), *this->get_clock(), 10000,
-                                 "Could not determine CPU frequency");
+                                 "Could not determine RAM usage from /proc/meminfo");
         }
 
         // Publish the message
@@ -196,6 +257,7 @@ private:
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::Publisher<akiro_interfaces::msg::CpuLoad>::SharedPtr cpu_load_publisher_;
     std::vector<CpuLoad> previous_state_;
+    bool reported_unavailable_cpu_frequency_ = false;
 };
 
 int main(int argc, char **argv)
