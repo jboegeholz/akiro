@@ -30,7 +30,6 @@ def generate_launch_description():
 
     return LaunchDescription([
         kinect_node,
-        depth_to_cloud,
         voxel_node,
         plane_node
     ])
