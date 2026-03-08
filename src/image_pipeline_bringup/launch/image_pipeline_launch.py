@@ -10,7 +10,17 @@ def generate_launch_description():
         name='kinect_node',
         output='screen'
     )
-
+    depth_to_cloud = Node(
+        package='depth_image_proc',
+        executable='point_cloud_xyz_node',
+        name='depth_to_pointcloud',
+        output='screen',
+        remappings=[
+            ('image_rect', '/depth/image_raw'),
+            ('camera_info', '/depth/camera_info'),
+            ('points', '/camera/depth/points')
+        ]
+    )
     voxel_node = Node(
         package='voxel_filter',
         executable='voxel_node',
@@ -30,6 +40,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         kinect_node,
+        depth_to_cloud,
         voxel_node,
         plane_node
     ])
