@@ -16,8 +16,9 @@ setup(
         ('share/' + package_name, ['package.xml']),
         ('lib/' + package_name, [package_name + '/blob_detector.py']), # to avoid importing module via package name
         ('lib/' + package_name, [package_name + '/drive_bot.py']), # to avoid importing module via package name
+        ('lib/' + package_name, [package_name + '/openrb_drive_bot.py']), # to avoid importing module via package name
     ],
-    install_requires=['setuptools'],
+    install_requires=['setuptools', 'dynamixel-sdk'],
     zip_safe=True,
     maintainer='jboegeholz',
     maintainer_email='jboegeholz@todo.todo',
@@ -27,7 +28,8 @@ setup(
         'console_scripts': [
             'process_image = ball_tracker.process_image:main',
             'follow_ball = ball_tracker.follow_ball:main',
-            'drive_bot = ball_tracker.drive_bot:main'
+            'drive_bot = ball_tracker.drive_bot:main',
+            'openrb_drive_bot = ball_tracker.openrb_drive_bot:main'
         ],
     },
 )
