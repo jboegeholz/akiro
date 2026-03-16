@@ -10,6 +10,8 @@ class DriveBot(Node):
         super().__init__('drive_bot')
         self.wheel_radius = 0.05 #
         self.wheel_base = 0.2
+        self.invert_left = bool(self.declare_parameter('invert_left', False).value)
+        self.invert_right = bool(self.declare_parameter('invert_right', True).value)
         try:
             self.serial_port = serial.Serial(
                 port='/dev/ttyUSB0',
@@ -30,6 +32,9 @@ class DriveBot(Node):
             self.listener_callback,
             10)
         self.get_logger().info('<< Subscribed to /cmd_vel_out')
+        self.get_logger().info(
+            f'Wheel inversion: left={self.invert_left}, right={self.invert_right}'
+        )
 
 
 
@@ -39,6 +44,11 @@ class DriveBot(Node):
 
         rpm_l = (v_l / (2 * math.pi * self.wheel_radius)) * 60
         rpm_r = (v_r / (2 * math.pi * self. wheel_radius)) * 60
+
+        if self.invert_left:
+            rpm_l = -rpm_l
+        if self.invert_right:
+            rpm_r = -rpm_r
 
         return rpm_l, rpm_r
 

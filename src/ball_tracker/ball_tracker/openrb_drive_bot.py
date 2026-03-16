@@ -35,7 +35,7 @@ class OpenRBDriveBot(Node):
         self.velocity_unit_rpm = float(self.declare_parameter("velocity_unit_rpm", 0.229).value)
         self.max_rpm = float(self.declare_parameter("max_rpm", 120.0).value)
         self.invert_left = bool(self.declare_parameter("invert_left", False).value)
-        self.invert_right = bool(self.declare_parameter("invert_right", False).value)
+        self.invert_right = bool(self.declare_parameter("invert_right", True).value)
 
         self.cmd_vel_topic = self.declare_parameter("cmd_vel_topic", "/cmd_vel").value
         self.cmd_timeout_sec = float(self.declare_parameter("cmd_timeout_sec", 0.5).value)
@@ -74,6 +74,9 @@ class OpenRBDriveBot(Node):
         self.get_logger().info(
             "OpenRB-150 verbunden auf "
             f"{self.port_name}@{self.baud_rate}, Motoren IDs {self.left_motor_id}/{self.right_motor_id}"
+        )
+        self.get_logger().info(
+            f"Wheel inversion: left={self.invert_left}, right={self.invert_right}"
         )
 
     def _open_port(self):
