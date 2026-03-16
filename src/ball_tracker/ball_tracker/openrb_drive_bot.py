@@ -19,8 +19,8 @@ class OpenRBDriveBot(Node):
 
         if PacketHandler is None or PortHandler is None:
             raise RuntimeError(
-                "dynamixel_sdk nicht gefunden. Installiere z.B. python3-dynamixel-sdk "
-                "oder `pip install dynamixel-sdk`."
+                "dynamixel_sdk not found. Install e.g. python3-dynamixel-sdk "
+                "or `pip install dynamixel-sdk`."
             )
 
         self.port_name = self.declare_parameter("port", "/dev/ttyACM0").value
@@ -72,8 +72,8 @@ class OpenRBDriveBot(Node):
         self.timeout_timer = self.create_timer(0.05, self._watchdog_timeout)
 
         self.get_logger().info(
-            "OpenRB-150 verbunden auf "
-            f"{self.port_name}@{self.baud_rate}, Motoren IDs {self.left_motor_id}/{self.right_motor_id}"
+            "OpenRB-150 connected at "
+            f"{self.port_name}@{self.baud_rate}, motor IDs {self.left_motor_id}/{self.right_motor_id}"
         )
         self.get_logger().info(
             f"Wheel inversion: left={self.invert_left}, right={self.invert_right}"
@@ -81,14 +81,14 @@ class OpenRBDriveBot(Node):
 
     def _open_port(self):
         if not self.port_handler.openPort():
-            raise RuntimeError(f"Serieller Port konnte nicht geoeffnet werden: {self.port_name}")
+            raise RuntimeError(f"Serial Port could not be opened: {self.port_name}")
         if not self.port_handler.setBaudRate(self.baud_rate):
-            raise RuntimeError(f"Baudrate konnte nicht gesetzt werden: {self.baud_rate}")
+            raise RuntimeError(f"baud rate could not be set: {self.baud_rate}")
 
     def _configure_motor(self, motor_id: int):
         model_number, comm_result, dxl_error = self.packet_handler.ping(self.port_handler, motor_id)
         self._check_comm_result(comm_result, dxl_error, f"Ping DXL ID {motor_id}")
-        self.get_logger().info(f"DXL ID {motor_id} gefunden (Model: {model_number})")
+        self.get_logger().info(f"DXL ID {motor_id} found (Model: {model_number})")
 
         self._write_u8(motor_id, self.addr_torque_enable, 0, "Torque Off")
         self._write_u8(
@@ -105,7 +105,7 @@ class OpenRBDriveBot(Node):
         if velocity_limit_raw <= 0:
             velocity_limit_raw = self.max_raw_velocity_fallback
             self.get_logger().warn(
-                f"DXL ID {motor_id}: ungueltiges Velocity Limit gelesen, nutze Fallback "
+                f"DXL ID {motor_id}: invalid velocity Limit read, use fallback "
                 f"{self.max_raw_velocity_fallback}."
             )
         self.velocity_limit_raw_by_id[motor_id] = velocity_limit_raw
@@ -114,11 +114,11 @@ class OpenRBDriveBot(Node):
     def _check_comm_result(self, comm_result: int, dxl_error: int, context: str):
         if comm_result != COMM_SUCCESS:
             raise RuntimeError(
-                f"{context} fehlgeschlagen: {self.packet_handler.getTxRxResult(comm_result)}"
+                f"{context} failed: {self.packet_handler.getTxRxResult(comm_result)}"
             )
         if dxl_error != 0:
             raise RuntimeError(
-                f"{context} meldet DXL Fehler: {self.packet_handler.getRxPacketError(dxl_error)}"
+                f"{context} signals DXL error: {self.packet_handler.getRxPacketError(dxl_error)}"
             )
 
     def _write_u8(self, motor_id: int, address: int, value: int, context: str):
@@ -163,7 +163,7 @@ class OpenRBDriveBot(Node):
         clamped = max(min(raw_velocity, velocity_limit_raw), -velocity_limit_raw)
         if clamped != raw_velocity and (time.monotonic() - self.last_velocity_clamp_log_time) > 1.0:
             self.get_logger().warn(
-                f"DXL ID {motor_id}: Goal Velocity {raw_velocity} auf {clamped} begrenzt "
+                f"DXL ID {motor_id}: Goal Velocity {raw_velocity} clamped on {clamped} "
                 f"(Limit: +/-{velocity_limit_raw})."
             )
             self.last_velocity_clamp_log_time = time.monotonic()
@@ -191,7 +191,7 @@ class OpenRBDriveBot(Node):
         except Exception as exc:
             now = time.monotonic()
             if now - self.last_write_error_log_time > 0.5:
-                self.get_logger().error(f"DXL Schreibfehler bei cmd_vel: {exc}")
+                self.get_logger().error(f"DXL write error at cmd_vel: {exc}")
                 self.last_write_error_log_time = now
             return
         self.last_cmd_time = time.monotonic()
@@ -208,12 +208,12 @@ class OpenRBDriveBot(Node):
             return
 
         self.get_logger().warn(
-            f"Kein cmd_vel fuer {self.cmd_timeout_sec:.2f}s erhalten, stoppe Motoren."
+            f"No cmd_vel received for {self.cmd_timeout_sec:.2f}, stop motors."
         )
         try:
             self._send_wheel_rpms(0.0, 0.0)
         except Exception as exc:
-            self.get_logger().error(f"DXL Schreibfehler beim Timeout-Stop: {exc}")
+            self.get_logger().error(f"DXL write error on Timeout-Stop: {exc}")
         self.timeout_triggered = True
 
     def destroy_node(self):
@@ -224,7 +224,7 @@ class OpenRBDriveBot(Node):
                 self._write_u8(self.left_motor_id, self.addr_torque_enable, 0, "Torque Off")
                 self._write_u8(self.right_motor_id, self.addr_torque_enable, 0, "Torque Off")
         except Exception as exc:  # pragma: no cover - best effort during shutdown
-            self.get_logger().warn(f"Shutdown cleanup fehlgeschlagen: {exc}")
+            self.get_logger().warn(f"Shutdown cleanup failed: {exc}")
         finally:
             try:
                 self.port_handler.closePort()
