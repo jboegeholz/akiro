@@ -35,7 +35,10 @@ def generate_launch_description():
         )
     drive_bot_node = Node(
             package='ball_tracker',
-            executable='drive_bot'
+            executable='openrb_drive_bot',
+            remappings=[
+                ('/cmd_vel', '/cmd_vel_out'),
+            ],
          )
 
     ld.add_action(process_image_node)

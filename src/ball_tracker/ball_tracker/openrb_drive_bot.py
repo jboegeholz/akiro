@@ -32,6 +32,7 @@ class OpenRBDriveBot(Node):
 
         self.wheel_radius_m = float(self.declare_parameter("wheel_radius_m", 0.05).value)
         self.wheel_base_m = float(self.declare_parameter("wheel_base_m", 0.2).value)
+        self.angular_gain = float(self.declare_parameter("angular_gain", 2.0).value)
         self.velocity_unit_rpm = float(self.declare_parameter("velocity_unit_rpm", 0.229).value)
         self.max_rpm = float(self.declare_parameter("max_rpm", 120.0).value)
         self.invert_left = bool(self.declare_parameter("invert_left", False).value)
@@ -78,6 +79,7 @@ class OpenRBDriveBot(Node):
         self.get_logger().info(
             f"Wheel inversion: left={self.invert_left}, right={self.invert_right}"
         )
+        self.get_logger().info(f"Motion scaling: angular_gain={self.angular_gain}")
 
     def _open_port(self):
         if not self.port_handler.openPort():
@@ -141,8 +143,9 @@ class OpenRBDriveBot(Node):
         return int(value)
 
     def _twist_to_rpm(self, linear_x: float, angular_z: float):
-        left_mps = linear_x - angular_z * (self.wheel_base_m / 2.0)
-        right_mps = linear_x + angular_z * (self.wheel_base_m / 2.0)
+        angular_component = angular_z * self.angular_gain
+        left_mps = linear_x - angular_component * (self.wheel_base_m / 2.0)
+        right_mps = linear_x + angular_component * (self.wheel_base_m / 2.0)
 
         left_rpm = (left_mps / (2.0 * math.pi * self.wheel_radius_m)) * 60.0
         right_rpm = (right_mps / (2.0 * math.pi * self.wheel_radius_m)) * 60.0
