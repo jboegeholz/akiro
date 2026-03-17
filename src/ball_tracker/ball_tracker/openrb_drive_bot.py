@@ -38,7 +38,7 @@ class OpenRBDriveBot(Node):
         self.invert_left = bool(self.declare_parameter("invert_left", False).value)
         self.invert_right = bool(self.declare_parameter("invert_right", True).value)
 
-        self.cmd_vel_topic = self.declare_parameter("cmd_vel_topic", "/cmd_vel").value
+        self.cmd_vel_topic = self.declare_parameter("cmd_vel_topic", "/cmd_vel_out").value
         self.cmd_timeout_sec = float(self.declare_parameter("cmd_timeout_sec", 0.5).value)
         self.stop_on_shutdown = bool(self.declare_parameter("stop_on_shutdown", True).value)
         self.disable_torque_on_shutdown = bool(
