@@ -17,8 +17,18 @@ def generate_launch_description():
         output='screen',
         remappings=[
             ('image_rect', '/depth/image_raw'),
-            ('camera_info', '/depth/camera_info'),
-            ('points', '/camera/depth/points')
+            ('camera_info', '/depth/camera_info')
+        ]
+    )
+    kinect_depth_tf = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='kinect_depth_tf',
+        arguments=[
+            '0', '0', '0',  # Translation
+            '-1.5708', '0', '-1.5708',  # Rotation (RPY)
+            'kinect_depth',  # parent frame
+            'kinect_depth_fixed'  # child frame
         ]
     )
     voxel_node = Node(
@@ -41,6 +51,7 @@ def generate_launch_description():
     return LaunchDescription([
         kinect_node,
         depth_to_cloud,
+        kinect_depth_tf,
         voxel_node,
         plane_node
     ])
