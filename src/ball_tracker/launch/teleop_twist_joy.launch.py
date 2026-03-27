@@ -8,8 +8,8 @@ def generate_launch_description():
     package_path = get_package_share_directory('ball_tracker')
 
     twist_mux_config_file_path = os.path.join(package_path, 'config', 'twist_mux.yaml')
-    twist_joy_config_file_path = os.path.join(package_path, 'config', 'twist_joy_xbox.yaml')
-    #twist_joy_config_file_path = os.path.join(package_path, 'config', 'twist_joy_logitech.yaml')
+    #twist_joy_config_file_path = os.path.join(package_path, 'config', 'twist_joy_xbox.yaml')
+    twist_joy_config_file_path = os.path.join(package_path, 'config', 'twist_joy_logitech.yaml')
 
     joy_node = Node(
             package='joy',

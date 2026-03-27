@@ -1,16 +1,26 @@
-teleop_twist_joy_node:
+joy_node:
+  ros__parameters:
+    device_id: 0
+    deadzone: 0.12
+    autorepeat_rate: 20.0
+
+teleop_node:
   ros__parameters:
     axis_linear:  # Left thumb stick vertical
       x: 1
     scale_linear:
-      x: 1.3
+      x: 0.5
     scale_linear_turbo:
-      x: 4.1
+      x: 1.0
 
     axis_angular:  # Left thumb stick horizontal
       yaw: 0
     scale_angular:
-      yaw: 1.9
+      yaw: 0.5
+    scale_angular_turbo:
+      yaw: 1.0
 
-    enable_button: 7  # Left trigger button
-    enable_turbo_button: 6  # Right trigger button
+    # No deadman button required for normal driving.
+    require_enable_button: false
+    enable_button: 7  # Optional deadman (unused while require_enable_button is false)
+    enable_turbo_button: 6  # Turbo when pressed
