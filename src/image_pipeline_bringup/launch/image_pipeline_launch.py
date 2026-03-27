@@ -26,7 +26,7 @@ def generate_launch_description():
         name='kinect_depth_tf',
         arguments=[
             '0', '0', '0',  # Translation
-            '-1.5708', '0', '-1.5708',  # Rotation (RPY)
+            '3.14159', '-1.5708', '-1.5708',  # Rotation (RPY)
             'kinect_depth',  # parent frame
             'kinect_depth_fixed'  # child frame
         ]

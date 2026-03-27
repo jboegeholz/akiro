@@ -13,10 +13,10 @@ public:
     VoxelFilterNode() : Node("voxel_filter_node")
     {
         this->declare_parameter("leaf_size", 0.005);
-
+        auto qos = rclcpp::QoS(rclcpp::KeepLast(10)).best_effort();
         subscription_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
           "/points",
-          10,
+          qos,
           [this](const sensor_msgs::msg::PointCloud2::SharedPtr msg) {callback(msg);}
           );
 
