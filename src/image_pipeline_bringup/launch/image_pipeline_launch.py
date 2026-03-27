@@ -35,7 +35,6 @@ def generate_launch_description():
         package='voxel_filter',
         executable='voxel_node',
         name='voxel_filter_node',
-        output='screen',
         parameters=[
             {'leaf_size': 0.005}
         ]
@@ -45,13 +44,17 @@ def generate_launch_description():
         package='plane_segmentation',
         executable='plane_seg_node',
         name='plane_segmentation_node',
-        output='screen',
     )
-
+    euclidean_cluster = Node(
+        package='euclidean_cluster',
+        executable='euclidean_cluster_node',
+        name='euclidean_cluster_node',
+    )
     return LaunchDescription([
         kinect_node,
         depth_to_cloud,
         kinect_depth_tf,
         voxel_node,
-        plane_node
+        plane_node,
+        euclidean_cluster
     ])
